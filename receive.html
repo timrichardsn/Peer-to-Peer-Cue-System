@@ -34,6 +34,9 @@
                 <td class="display-box hidden" id="fade"><h2>Fade</h2></td>
                 <td class="display-box hidden" id="off"><h2>All Off</h2></td>
             </tr>
+            <tr>
+                <video autoplay></video> 
+            </tr>
         </table>
 
         <script src="https://cdn.jsdelivr.net/npm/peerjs@1.2.0/dist/peerjs.min.js"></script>
@@ -112,6 +115,24 @@
                     peer.on('error', function (err) {
                         console.log(err);
                         alert('' + err);
+                    });
+
+                    peer.on('call', function(call) {
+                        console.log('Receiving call...');
+                        call.on('stream', function(stream) {
+                            // `stream` is the MediaStream of the remote peer.
+                            // Here you'd add it to an HTML video/canvas element.
+                            var video = document.querySelector('video');
+                            video.srcObject = stream;
+                            video.onloadedmetadata = function(e) {
+                                video.play();
+                            };
+
+                        });
+
+
+                        // Answer the call, providing our mediaStream
+                        call.answer();
                     });
                 };
 
